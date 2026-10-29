@@ -139,6 +139,8 @@ export type Role = {
   pointsLabel?: string
   /** Key achievements, listed under their own heading. */
   achievements?: string[]
+  /** Certificate: web image (webp + jpg fallback) and the original PDF, all in /public. Shown as an evidence print that opens a viewer. */
+  certificate?: { webp: string; jpg: string; pdf: string; alt: string }
 }
 
 export const roles: Role[] = [
@@ -204,7 +206,33 @@ export const extracurriculars: Role[] = [
       'Topic: “From Language Model to Service: LLM Inference, APIs and Scalable Deployment”.',
       'Took part in a hands-on workshop on LLM inference, APIs and scalable deployment.',
     ],
-    links: [{ label: 'Certificate', href: 'media/cail-workshop-2026-certificate.pdf' }],
+    certificate: {
+      webp: 'media/cail-workshop-2026-certificate.webp',
+      jpg: 'media/cail-workshop-2026-certificate.jpg',
+      pdf: 'media/cail-workshop-2026-certificate.pdf',
+      alt: 'Certificate of participation presented by the Cognitive Agents and Interaction Lab (CAIL), Department of Computer Science and Engineering, University of Dhaka, to Md. Akram Khan for completing the two-day workshop on LLM Inference, APIs, and Scalable Deployment',
+    },
+  },
+  {
+    title: 'Participant',
+    org: 'BUBT-BAPS National Programming Camp 2025',
+    place: 'Bangladesh University of Business and Technology (BUBT), Dhaka',
+    dates: 'Sep 25–27, 2025',
+    kind: 'Training',
+    summary:
+      'A three-day national competitive programming camp organized by the Department of CSE, BUBT, with the Bangladesh Association of Problem Setters (BAPS) — 221 participants from 98 institutions, designed to prepare students for the ICPC Asia Dhaka Regional Contest 2025.',
+    points: [
+      'Trained in the Intermediate category under experienced competitive programmers from across the country.',
+      'Covered Graph Theory, Dynamic Programming, Data Structures, Computational Geometry, String Algorithms, Network Flow & Matching, and Mathematics.',
+      'Competed in daily problem-solving contests that applied each day’s lecture material under time pressure.',
+      'Strengthened algorithmic thinking, problem-solving speed, and teamwork in an ICPC-style environment.',
+    ],
+    certificate: {
+      webp: 'media/bubt-baps-camp-2025-certificate.webp',
+      jpg: 'media/bubt-baps-camp-2025-certificate.jpg',
+      pdf: 'media/bubt-baps-camp-2025-certificate.pdf',
+      alt: 'BUBT-BAPS National Programming Camp 2025 certificate of participation, held 25–27 September 2025, certifying that Md. Akram Khan of University of Dhaka completed the camp at Intermediate Level',
+    },
   },
   {
     title: 'Executive Member',
@@ -225,7 +253,12 @@ export const extracurriculars: Role[] = [
     points: [
       'Volunteered at Code Samurai, the biggest inter-university hackathon in Bangladesh, organized by the University of Dhaka in collaboration with BJIT, Japan.',
     ],
-    links: [{ label: 'Certificate', href: 'media/code-samurai-2024-certificate.pdf' }],
+    certificate: {
+      webp: 'media/code-samurai-2024-certificate.webp',
+      jpg: 'media/code-samurai-2024-certificate.jpg',
+      pdf: 'media/code-samurai-2024-certificate.pdf',
+      alt: 'Code Samurai 2024 certificate of appreciation awarded to Md Akram Khan for voluntary work towards the hackathon, jointly organised by the Department of Computer Science and Engineering, University of Dhaka, and BJIT Limited, held 11–12 May 2024',
+    },
   },
 ]
 
@@ -549,6 +582,19 @@ export const gallery: GalleryItem[] = [
     height: 720,
     alt: 'NahamCon CTF 2025 certificate of completion for team Restless_goblins: 1326 points, 74th of 859 teams, 8 of 25 challenges solved',
     pdf: 'media/nahamcon-2025-certificate.pdf',
+  },
+  {
+    id: 'bubt-baps-camp-2025',
+    kind: 'certificate',
+    title: 'BUBT-BAPS Camp 2025',
+    caption: 'Certificate of participation · National Programming Camp, Intermediate Level · BUBT × BAPS · ICPC prep',
+    date: 'Sep 2025',
+    webp: 'media/bubt-baps-camp-2025-certificate.webp',
+    jpg: 'media/bubt-baps-camp-2025-certificate.jpg',
+    width: 1280,
+    height: 911,
+    alt: 'BUBT-BAPS National Programming Camp 2025 certificate of participation, held 25–27 September 2025, certifying that Md. Akram Khan of University of Dhaka completed the camp at Intermediate Level',
+    pdf: 'media/bubt-baps-camp-2025-certificate.pdf',
   },
   {
     id: 'battle-of-brains-2025',

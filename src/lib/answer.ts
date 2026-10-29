@@ -95,12 +95,14 @@ const CONTEST_ALIASES: [string, string[]][] = [
   ['DU CTF 2023', ['du ctf', 'ductf']],
 ]
 
+// Keyed by org (unique), so the two "Participant" roles never collide on title.
 const ROLE_ALIASES: [string, string[]][] = [
-  ['Research Collaborator', ['research', 'researcher', 'mosaddek', 'supervisor', 'thesis']],
-  ['Organizer & Problem Setter', ['problem setter', 'setter', 'set problems', 'problems did', 'battle of brains 2026', 'bob 2026', 'organizer', 'organiser']],
-  ['Participant', ['cail', 'workshop']],
-  ['Executive Member', ['club', 'csedu', 'executive', 'students club']],
-  ['Volunteer', ['code samurai', 'samurai', 'volunteer', 'volunteering', 'hackathon']],
+  ['University of Dhaka', ['research', 'researcher', 'mosaddek', 'supervisor', 'thesis']],
+  ['Battle of Brains 2026', ['problem setter', 'setter', 'set problems', 'problems did', 'battle of brains 2026', 'bob 2026', 'organizer', 'organiser']],
+  ['CAIL Workshop 2026', ['cail', 'workshop']],
+  ['BUBT-BAPS National Programming Camp 2025', ['bubt', 'baps', 'programming camp', 'national programming camp', 'icpc camp', 'coding camp']],
+  ['CSEDU Students’ Club', ['club', 'csedu', 'executive', 'students club']],
+  ['Code Samurai 2024', ['code samurai', 'samurai', 'volunteer', 'volunteering', 'hackathon']],
 ]
 
 // ───────────────────────── answer builders ─────────────────────────
@@ -143,12 +145,13 @@ function contestReply(cName: string): Reply {
   }
 }
 
-function roleReply(title: string): Reply {
-  const r = allRoles.find((x) => x.title === title)!
-  const isExperience = roles.some((x) => x.title === title)
+function roleReply(org: string): Reply {
+  const r = allRoles.find((x) => x.org === org)!
+  const isExperience = roles.some((x) => x.org === org)
   const extra = [
     ...(r.problems ?? []).map((p) => `- Problem set: [${p.label}](${p.href})`),
     ...(r.links ?? []).map((l) => `- [${l.label}](${/^https?:/.test(l.href) ? l.href : asset(l.href)})`),
+    ...(r.certificate ? [`- [Certificate (PDF)](${asset(r.certificate.pdf)})`] : []),
   ]
   return {
     text:
@@ -323,8 +326,8 @@ export function answer(question: string): Reply {
   for (const p of projects) {
     if (has(q, [p.title, ...(PROJECT_ALIASES[p.id] ?? [])])) return projectReply(p.id)
   }
-  for (const [title, aliases] of ROLE_ALIASES) {
-    if (has(q, aliases)) return roleReply(title)
+  for (const [org, aliases] of ROLE_ALIASES) {
+    if (has(q, aliases)) return roleReply(org)
   }
   for (const [cName, aliases] of CONTEST_ALIASES) {
     if (has(q, aliases)) return contestReply(cName)

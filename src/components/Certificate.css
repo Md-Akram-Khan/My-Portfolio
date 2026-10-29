@@ -1,0 +1,170 @@
+/* Shared certificate preview — an "evidence print" button and its modal viewer.
+   Used by Contests ("Duels Fought") and Extracurricular ("The Human World"). */
+
+/* ───────── The evidence print on a card ───────── */
+.cert {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 1rem;
+  padding: 8px 18px 8px 8px;
+  color: var(--paper);
+  text-align: left;
+  background: color-mix(in srgb, var(--ink) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius: 3px;
+  cursor: pointer;
+  transition:
+    border-color 250ms var(--ease),
+    box-shadow 250ms var(--ease);
+}
+.cert:hover,
+.cert:focus-visible {
+  border-color: var(--gold);
+  box-shadow: 0 0 24px -8px color-mix(in srgb, var(--gold) 70%, transparent);
+}
+.cert__thumb {
+  width: 96px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border: 3px solid var(--paper);
+  border-bottom-width: 8px;
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.9);
+  transform: rotate(-3deg);
+  transition: transform 300ms var(--ease);
+}
+.cert:hover .cert__thumb {
+  transform: rotate(0deg) scale(1.04);
+}
+.cert__text {
+  display: grid;
+  gap: 2px;
+}
+.cert__label {
+  font-size: calc(var(--step--1) * 0.7);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.cert__title {
+  font-family: var(--font-rules);
+  font-size: var(--step-0);
+}
+
+/* ───────── Certificate viewer (native modal dialog) ───────── */
+.cert-viewer {
+  width: min(1100px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  color: var(--paper);
+  background: var(--ink-2);
+  border: 1px solid color-mix(in srgb, var(--blood) 55%, transparent);
+  border-radius: 6px;
+  box-shadow:
+    0 40px 100px -20px rgba(0, 0, 0, 0.95),
+    0 0 60px -20px color-mix(in srgb, var(--blood) 70%, transparent);
+}
+.cert-viewer::backdrop {
+  background: rgba(3, 3, 3, 0.82);
+  backdrop-filter: blur(3px);
+}
+.cert-viewer[open] {
+  animation: cert-viewer-in 320ms var(--ease) both;
+}
+@keyframes cert-viewer-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}
+.cert-viewer__inner {
+  display: grid;
+  gap: 16px;
+  padding: clamp(16px, 2.4vw, 26px);
+}
+.cert-viewer__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.cert-viewer__kicker {
+  font-size: calc(var(--step--1) * 0.72);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.cert-viewer__title {
+  margin-top: 0.3rem;
+  font-size: var(--step-2);
+  line-height: 1.05;
+}
+.cert-viewer__close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  color: var(--paper-dim);
+  font-size: 1.5rem;
+  line-height: 1;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.cert-viewer__close:hover {
+  color: var(--paper);
+  border-color: var(--blood);
+}
+.cert-viewer__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+}
+.cert-viewer__pdf {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  min-height: 40px;
+  padding: 0.45em 1em;
+  font-size: calc(var(--step--1) * 0.78);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--paper);
+  border: 1px solid color-mix(in srgb, var(--blood) 55%, transparent);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--ink) 70%, transparent);
+  transition:
+    border-color 250ms var(--ease),
+    background-color 250ms var(--ease),
+    box-shadow 250ms var(--ease);
+}
+.cert-viewer__pdf:hover,
+.cert-viewer__pdf:focus-visible {
+  color: var(--paper);
+  border-color: var(--blood-bright);
+  background: color-mix(in srgb, var(--blood-deep) 70%, transparent);
+  box-shadow: 0 0 22px -4px color-mix(in srgb, var(--blood) 70%, transparent);
+}
+.cert-viewer__arrow {
+  width: 0.8em;
+  height: 0.8em;
+  transition: transform 250ms var(--ease);
+}
+.cert-viewer__pdf:hover .cert-viewer__arrow,
+.cert-viewer__pdf:focus-visible .cert-viewer__arrow {
+  transform: translate(2px, -2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cert-viewer[open] {
+    animation: none;
+  }
+}

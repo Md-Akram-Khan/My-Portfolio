@@ -3,8 +3,10 @@
 // on it in red. Filter: all / team CTFs / solo programming contests.
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { contests, sections, type Contest } from '../data/portfolio'
-import { asset, useReducedMotion } from '../lib/env'
+import { useReducedMotion } from '../lib/env'
 import RuleEyebrow from '../components/RuleEyebrow'
+import { CertButton } from '../components/Certificate'
+import { useCertViewer } from '../components/useCertViewer'
 import './Duels.css'
 
 const meta = sections.find((s) => s.id === 'duels')
@@ -52,7 +54,7 @@ const best = contests.reduce((a, b) => (topShare(b) < topShare(a) ? b : a))
 const teamCount = contests.filter((c) => c.kind === 'ctf').length
 const soloCount = contests.length - teamCount
 
-function DuelCard({ c, onCertificate }: { c: Contest; onCertificate: (c: Contest) => void }) {
+function DuelCard({ c, onCertificate }: { c: Contest; onCertificate: (cert: NonNullable<Contest['certificate']>, title: string) => void }) {
   const k = KIND[c.kind]
   const field = `${c.field}${c.fieldPlus ? '+' : ''}`
   return (
@@ -101,16 +103,7 @@ function DuelCard({ c, onCertificate }: { c: Contest; onCertificate: (c: Contest
       )}
 
       <p className="duels__line">{k.line}</p>
-      {c.certificate && (
-        <button type="button" className="duels__cert" onClick={() => onCertificate(c)}>
-          <img className="duels__cert-thumb" src={asset(c.certificate.webp)} alt="" width={128} height={72} loading="lazy" decoding="async" />
-          <span className="duels__cert-text">
-            <span className="mono duels__cert-label">Evidence</span>
-            <span className="duels__cert-title">View certificate</span>
-          </span>
-          <span className="visually-hidden"> for {c.name}</span>
-        </button>
-      )}
+      {c.certificate && <CertButton cert={c.certificate} forLabel={c.name} onOpen={() => onCertificate(c.certificate!, c.name)} />}
       {c.standings && (
         <a className="mono duels__standings" href={c.standings} target="_blank" rel="noopener noreferrer">
           View standings
@@ -137,15 +130,8 @@ export default function Duels() {
   const [filter, setFilter] = useState<Filter>('all')
   const instant = reduced || typeof IntersectionObserver === 'undefined'
 
-  // Certificate viewer: a native modal <dialog> (focus trap, Escape and the
-  // backdrop click all close it; focus returns to the button that opened it).
-  const dialogRef = useRef<HTMLDialogElement>(null)
-  const [cert, setCert] = useState<Contest | null>(null)
-  const openCertificate = (c: Contest) => {
-    setCert(c)
-    dialogRef.current?.showModal()
-  }
-  const closeCertificate = () => dialogRef.current?.close()
+  // Certificate viewer: shared with the Extracurricular section (see Certificate.tsx).
+  const { open: openCertificate, viewer } = useCertViewer()
 
   useLayoutEffect(() => {
     if (!instant) ref.current?.classList.add('duels--armed')
@@ -225,43 +211,7 @@ export default function Duels() {
         </ol>
       </div>
 
-      <dialog
-        ref={dialogRef}
-        className="duels__viewer"
-        aria-labelledby="duels-viewer-title"
-        onClick={(e) => {
-          if (e.target === e.currentTarget) closeCertificate() // backdrop
-        }}
-        onClose={() => setCert(null)}
-      >
-        {cert?.certificate && (
-          <div className="duels__viewer-inner">
-            <header className="duels__viewer-head">
-              <div>
-                <p className="mono duels__viewer-kicker">Evidence · Certificate</p>
-                <h3 className="gothic duels__viewer-title" id="duels-viewer-title">
-                  {cert.name}
-                </h3>
-              </div>
-              <button type="button" className="duels__viewer-close" onClick={closeCertificate}>
-                <span aria-hidden="true">×</span>
-                <span className="visually-hidden">Close the certificate</span>
-              </button>
-            </header>
-            <picture>
-              <source type="image/webp" srcSet={asset(cert.certificate.webp)} />
-              <img className="duels__viewer-img" src={asset(cert.certificate.jpg)} alt={cert.certificate.alt} width={1280} height={720} />
-            </picture>
-            <a className="mono duels__standings duels__viewer-pdf" href={asset(cert.certificate.pdf)} target="_blank" rel="noopener noreferrer">
-              Open the PDF
-              <span className="visually-hidden"> (opens in a new tab)</span>
-              <svg className="duels__standings-arrow" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
-                <path d="M3 9 9 3M4.5 3H9v4.5" fill="none" stroke="currentColor" strokeWidth="1.3" />
-              </svg>
-            </a>
-          </div>
-        )}
-      </dialog>
+      {viewer}
     </section>
   )
 }

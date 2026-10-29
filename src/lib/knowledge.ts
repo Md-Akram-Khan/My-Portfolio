@@ -42,6 +42,7 @@ export function buildKnowledge(): string {
     for (const a of r.achievements ?? []) line(`  - Achievement: ${a}`)
     for (const p of r.problems ?? []) line(`  - Problem set: "${p.label}" ${p.href}`)
     for (const l of r.links ?? []) line(`  - ${l.label}: ${/^https?:/.test(l.href) ? l.href : SITE + l.href}`)
+    if (r.certificate) line(`  - Certificate (PDF): ${SITE}${r.certificate.pdf}`)
   }
 
   line()

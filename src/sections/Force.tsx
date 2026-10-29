@@ -5,11 +5,13 @@ import { useEffect, useLayoutEffect, useRef } from 'react'
 import { roles, sections, type Role, type SectionId } from '../data/portfolio'
 import { asset, useReducedMotion } from '../lib/env'
 import RuleEyebrow from '../components/RuleEyebrow'
+import { CertButton } from '../components/Certificate'
+import { useCertViewer } from '../components/useCertViewer'
 import './Force.css'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
-function RoleCard({ role, i }: { role: Role; i: number }) {
+function RoleCard({ role, i, onCertificate }: { role: Role; i: number; onCertificate: (cert: NonNullable<Role['certificate']>, title: string) => void }) {
   return (
     <li className={`force__entry${role.current ? ' force__entry--current' : ''}`} data-reveal>
       <span className="force__node" aria-hidden="true" />
@@ -75,6 +77,9 @@ function RoleCard({ role, i }: { role: Role; i: number }) {
               ))}
             </ul>
           )}
+          {role.certificate && (
+            <CertButton cert={role.certificate} forLabel={role.org} onOpen={() => onCertificate(role.certificate!, role.org)} />
+          )}
         </div>
       </article>
     </li>
@@ -100,6 +105,7 @@ export function CaseFileSection({
   const ref = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
   const instant = reduced || typeof IntersectionObserver === 'undefined'
+  const { open: openCertificate, viewer } = useCertViewer()
 
   useLayoutEffect(() => {
     if (!instant) ref.current?.classList.add('force--armed')
@@ -140,10 +146,11 @@ export function CaseFileSection({
 
         <ol className="force__timeline" role="list">
           {entries.map((role, i) => (
-            <RoleCard key={`${role.title}-${role.org}`} role={role} i={i} />
+            <RoleCard key={`${role.title}-${role.org}`} role={role} i={i} onCertificate={openCertificate} />
           ))}
         </ol>
       </div>
+      {viewer}
     </section>
   )
 }
