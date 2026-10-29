@@ -68,7 +68,7 @@
   animation-direction: reverse;
 }
 /* The belts never stop for a hover — only while a print is open in the lightbox. */
-.gallery__reel.is-paused .gallery__track {
+.gallery:has(.gallery__viewer[open]) .gallery__track {
   animation-play-state: paused;
 }
 @keyframes gallery-marquee {

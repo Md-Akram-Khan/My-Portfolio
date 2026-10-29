@@ -87,8 +87,10 @@ export default function Gallery() {
       </div>
 
       {/* Full-bleed conveyor: two belts scrolling in opposite directions. The belts
-          keep moving under the cursor; they pause only while a print is open. */}
-      <div className={`gallery__reel${index !== null ? ' is-paused' : ''}`} data-reveal aria-label="Certificates and awards">
+          keep moving under the cursor; CSS pauses them only while a print is open
+          (see `.gallery:has(.gallery__viewer[open])`). The className stays static so
+          the scroll-reveal observer's `is-in` class is never clobbered. */}
+      <div className="gallery__reel" data-reveal aria-label="Certificates and awards">
         {belts.map((items, b) => (
           <div className={`gallery__row gallery__row--${b === 0 ? 'a' : 'b'}`} key={b}>
             <ul className="gallery__track" role="list" style={{ '--dur': `${items.length * 6}s` } as React.CSSProperties}>
