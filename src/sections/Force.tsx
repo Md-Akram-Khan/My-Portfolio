@@ -2,12 +2,11 @@
 // are the ones Akram joined. A vertical timeline of case-file cards: role, place
 // and dates on the left (the date stamped like a file label), details on the right.
 import { useEffect, useLayoutEffect, useRef } from 'react'
-import { roles, sections, type Role } from '../data/portfolio'
+import { roles, sections, type Role, type SectionId } from '../data/portfolio'
 import { asset, useReducedMotion } from '../lib/env'
 import RuleEyebrow from '../components/RuleEyebrow'
 import './Force.css'
 
-const meta = sections.find((s) => s.id === 'force')
 const pad = (n: number) => String(n).padStart(2, '0')
 
 function RoleCard({ role, i }: { role: Role; i: number }) {
@@ -82,7 +81,22 @@ function RoleCard({ role, i }: { role: Role; i: number }) {
   )
 }
 
-export default function Force() {
+/**
+ * A vertical timeline of case-file cards, shared by "The Task Force" (experience)
+ * and "The Human World" (extracurricular). Same look; different file, lede and data.
+ */
+export function CaseFileSection({
+  sectionId,
+  subtitle,
+  lede,
+  entries,
+}: {
+  sectionId: SectionId
+  subtitle: string
+  lede: string
+  entries: Role[]
+}) {
+  const meta = sections.find((s) => s.id === sectionId)
   const ref = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
   const instant = reduced || typeof IntersectionObserver === 'undefined'
@@ -114,22 +128,33 @@ export default function Force() {
   }, [instant])
 
   return (
-    <section id="force" className="section force" aria-labelledby="force-title" ref={ref}>
+    <section id={sectionId} className="section force" aria-labelledby={`${sectionId}-title`} ref={ref}>
       <div className="container">
         <header className="force__intro" data-reveal>
-          <RuleEyebrow numeral={meta?.numeral ?? 'II'} subtitle="Experience" className="force__eyebrow" />
-          <h2 className="gothic force__title" id="force-title">
-            {meta?.label ?? 'The Task Force'}
+          <RuleEyebrow numeral={meta?.numeral ?? ''} subtitle={subtitle} className="force__eyebrow" />
+          <h2 className="gothic force__title" id={`${sectionId}-title`}>
+            {meta?.label ?? subtitle}
           </h2>
-          <p className="hand force__lede">Every investigation needs a team. These are the ones I joined.</p>
+          <p className="hand force__lede">{lede}</p>
         </header>
 
         <ol className="force__timeline" role="list">
-          {roles.map((role, i) => (
+          {entries.map((role, i) => (
             <RoleCard key={`${role.title}-${role.org}`} role={role} i={i} />
           ))}
         </ol>
       </div>
     </section>
+  )
+}
+
+export default function Force() {
+  return (
+    <CaseFileSection
+      sectionId="force"
+      subtitle="Experience"
+      lede="Every investigation needs a team. These are the ones I joined."
+      entries={roles}
+    />
   )
 }

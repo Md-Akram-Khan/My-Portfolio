@@ -13,6 +13,7 @@ import SceneFallback from './three/SceneFallback'
 import Hero from './sections/Hero'
 import Rules from './sections/Rules'
 import Force from './sections/Force'
+import TheHumanWorld from './sections/TheHumanWorld'
 import Projects from './sections/Projects'
 import Cases from './sections/Cases'
 import Skills from './sections/Skills'
@@ -100,6 +101,7 @@ export default function App() {
         <Hero />
         <Rules />
         <Force />
+        <TheHumanWorld />
         <Projects />
         <Cases />
         <Skills />

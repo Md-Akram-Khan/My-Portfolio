@@ -1,19 +1,20 @@
 // Single source of truth for all portfolio content.
 // Every fact here comes from Md. Akram Khan's public GitHub repositories.
 
-export type SectionId = 'hero' | 'rules' | 'force' | 'names' | 'cases' | 'eyes' | 'duels' | 'gallery' | 'contact'
+export type SectionId = 'hero' | 'rules' | 'force' | 'world' | 'names' | 'cases' | 'eyes' | 'duels' | 'gallery' | 'contact'
 
 /** `label` is the themed name; `plain` says what the section is, for the nav. */
 export const sections: { id: SectionId; label: string; plain: string; numeral: string }[] = [
   { id: 'hero', label: 'The Note', plain: 'Home', numeral: '0' },
   { id: 'rules', label: 'How to Use It', plain: 'About Me', numeral: 'I' },
   { id: 'force', label: 'The Task Force', plain: 'Experience', numeral: 'II' },
-  { id: 'names', label: 'Names Written', plain: 'Projects', numeral: 'III' },
-  { id: 'cases', label: 'Cases Closed', plain: 'Problem Solving', numeral: 'IV' },
-  { id: 'eyes', label: 'Shinigami Eyes', plain: 'Skills', numeral: 'V' },
-  { id: 'duels', label: 'Duels Fought', plain: 'Contests', numeral: 'VI' },
-  { id: 'gallery', label: 'Evidence Room', plain: 'Gallery', numeral: 'VII' },
-  { id: 'contact', label: 'Write a Name', plain: 'Contact', numeral: 'VIII' },
+  { id: 'world', label: 'The Human World', plain: 'Extracurricular', numeral: 'III' },
+  { id: 'names', label: 'Names Written', plain: 'Projects', numeral: 'IV' },
+  { id: 'cases', label: 'Cases Closed', plain: 'Problem Solving', numeral: 'V' },
+  { id: 'eyes', label: 'Shinigami Eyes', plain: 'Skills', numeral: 'VI' },
+  { id: 'duels', label: 'Duels Fought', plain: 'Contests', numeral: 'VII' },
+  { id: 'gallery', label: 'Evidence Room', plain: 'Gallery', numeral: 'VIII' },
+  { id: 'contact', label: 'Write a Name', plain: 'Contact', numeral: 'IX' },
 ]
 
 export const profile = {
@@ -173,6 +174,12 @@ export const roles: Role[] = [
       'Received positive feedback from students and educators',
     ],
   },
+]
+
+// "The Human World" — extracurricular activities: a Shinigami descends to walk
+// among the living. Organizing, workshops, club leadership and volunteering,
+// newest first. Shares the Role shape and the case-file timeline with The Task Force.
+export const extracurriculars: Role[] = [
   {
     title: 'Organizer & Problem Setter',
     org: 'Battle of Brains 2026',

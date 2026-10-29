@@ -4,8 +4,12 @@
 // and what kind of answer it wants (contact, skills, experience…), then writes the
 // answer from the data. It never invents: unknown questions get an honest "not in
 // the note" plus suggestions. Used alone, or as the fallback when the AI is down.
-import { contests, judges, judgesAsOf, problemSolving, profile, projects, roles, skillGroups, type SectionId } from '../data/portfolio.ts'
+import { contests, extracurriculars, judges, judgesAsOf, problemSolving, profile, projects, roles, skillGroups, type SectionId } from '../data/portfolio.ts'
+import { asset } from './env.ts'
 import { cvUrl, ordinal } from './knowledge.ts'
+
+/** Both case-file timelines — The Task Force (experience) and The Human World (extracurricular). */
+const allRoles = [...roles, ...extracurriculars]
 
 export type Reply = {
   /** Light markdown: **bold**, [label](url), "- " bullets, blank-line paragraphs. */
@@ -140,17 +144,18 @@ function contestReply(cName: string): Reply {
 }
 
 function roleReply(title: string): Reply {
-  const r = roles.find((x) => x.title === title)!
+  const r = allRoles.find((x) => x.title === title)!
+  const isExperience = roles.some((x) => x.title === title)
   const extra = [
     ...(r.problems ?? []).map((p) => `- Problem set: [${p.label}](${p.href})`),
-    ...(r.links ?? []).map((l) => `- [${l.label}](${l.href})`),
+    ...(r.links ?? []).map((l) => `- [${l.label}](${/^https?:/.test(l.href) ? l.href : asset(l.href)})`),
   ]
   return {
     text:
       `**${r.title}**, ${r.org}${r.place ? `, ${r.place}` : ''} (${r.dates}).\n\n` +
       [...r.points.map((p) => `- ${p}`), ...extra].join('\n'),
-    section: 'force',
-    suggest: ['All experience?', `How can I contact ${name}?`],
+    section: isExperience ? 'force' : 'world',
+    suggest: isExperience ? ['All experience?', `How can I contact ${name}?`] : ['All activities?', 'All experience?'],
   }
 }
 
@@ -208,9 +213,19 @@ const R = {
     suggest: [`Does ${name} know React?`, 'Show all projects'],
   }),
   experience: (): Reply => ({
-    text: `${name}'s experience, newest first:\n\n` + roles.map((r) => `- **${r.title}**, ${r.org} (${r.dates})`).join('\n'),
+    text:
+      `${name}'s experience ("The Task Force"), newest first:\n\n` +
+      roles.map((r) => `- **${r.title}**, ${r.org} (${r.dates})`).join('\n') +
+      `\n\nBeyond the job, there's extracurricular work too — ask about activities.`,
     section: 'force',
-    suggest: ['Tell me about the research', 'Which problems did Akram set?'],
+    suggest: ['Tell me about the research', 'Extracurricular activities?'],
+  }),
+  extracurricular: (): Reply => ({
+    text:
+      `${name}'s extracurricular activities ("The Human World"), newest first:\n\n` +
+      extracurriculars.map((r) => `- **${r.title}**, ${r.org} (${r.dates})`).join('\n'),
+    section: 'world',
+    suggest: ['Which problems did Akram set?', 'All experience?'],
   }),
   cp: (): Reply => ({
     text:
@@ -288,7 +303,8 @@ const INTENTS: [keyof typeof R, string[]][] = [
   ['cp', ['competitive programming', 'cp', 'solved', 'problems solved', 'dsa', 'algorithm', 'algorithms', 'online judge', 'judges', 'rating', 'cases closed', 'problem solving']],
   ['site', ['this site', 'this website', 'website built', 'site built', 'death note', 'three.js', 'threejs', '3d', 'how was this']],
   ['ai', ['ai', 'ml', 'machine learning', 'artificial intelligence', 'deep learning', 'model', 'models']],
-  ['experience', ['experience', 'work', 'worked', 'job history', 'role', 'roles', 'position', 'task force', 'volunteer', 'club', 'leadership']],
+  ['extracurricular', ['extracurricular', 'extra curricular', 'activities', 'activity', 'co-curricular', 'cocurricular', 'volunteer', 'volunteering', 'club', 'leadership', 'organizing', 'organising', 'human world']],
+  ['experience', ['experience', 'work', 'worked', 'job history', 'role', 'roles', 'position', 'task force']],
   ['education', ['education', 'study', 'studies', 'student', 'university', 'college', 'degree', 'cgpa', 'gpa', 'graduate', 'undergraduate', 'dhaka university', 'du']],
   ['projects', ['project', 'projects', 'built', 'build', 'made', 'portfolio work', 'apps', 'app', 'names written', 'repos', 'repository']],
   ['skills', ['skill', 'skills', 'stack', 'tech', 'technologies', 'tools', 'languages', 'language', 'framework', 'frameworks', 'know', 'knows', 'good at', 'expert', 'shinigami eyes']],

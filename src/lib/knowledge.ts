@@ -2,7 +2,7 @@
 // Built from src/data/portfolio.ts, so it never drifts from what the page shows.
 // The build writes it to /knowledge.txt (see vite.config.ts); the chat Worker
 // reads it from the live site and gives it to the model as its only source.
-import { contests, judges, judgesAsOf, problemSolving, profile, projects, roles, rules, skillGroups } from '../data/portfolio.ts'
+import { contests, extracurriculars, judges, judgesAsOf, problemSolving, profile, projects, roles, rules, skillGroups } from '../data/portfolio.ts'
 
 const SITE = 'https://md-akram-khan.github.io/My-Portfolio/'
 export const cvUrl = profile.cv ? `${SITE}${profile.cv}` : ''
@@ -35,16 +35,22 @@ export function buildKnowledge(): string {
     line(`- ${r.title}: ${r.paragraphs.join(' ')}${r.coda ? ` ${r.coda}` : ''}`)
   }
 
-  line()
-  line('## Experience ("The Task Force")')
-  for (const r of roles) {
+  const roleLines = (r: (typeof roles)[number]) => {
     line(`- ${r.title} — ${r.org}${r.place ? `, ${r.place}` : ''} (${r.dates}; ${r.kind})`)
     if (r.summary) line(`  ${r.summary}`)
     for (const p of r.points) line(`  - ${p}`)
     for (const a of r.achievements ?? []) line(`  - Achievement: ${a}`)
     for (const p of r.problems ?? []) line(`  - Problem set: "${p.label}" ${p.href}`)
-    for (const l of r.links ?? []) line(`  - ${l.label}: ${l.href}`)
+    for (const l of r.links ?? []) line(`  - ${l.label}: ${/^https?:/.test(l.href) ? l.href : SITE + l.href}`)
   }
+
+  line()
+  line('## Experience ("The Task Force")')
+  for (const r of roles) roleLines(r)
+
+  line()
+  line('## Extracurricular activities ("The Human World")')
+  for (const r of extracurriculars) roleLines(r)
 
   line()
   line('## Projects ("Names Written")')
