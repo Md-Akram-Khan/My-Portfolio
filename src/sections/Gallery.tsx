@@ -84,13 +84,12 @@ export default function Gallery() {
             <p className="hand gallery__lede">The evidence never stops moving. Hover a print to hold it still.</p>
           </div>
         </header>
-      </div>
 
-      {/* Full-bleed conveyor: two belts scrolling in opposite directions. The belts
-          keep moving under the cursor; CSS pauses them only while a print is open
-          (see `.gallery:has(.gallery__viewer[open])`). The className stays static so
-          the scroll-reveal observer's `is-in` class is never clobbered. */}
-      <div className="gallery__reel" data-reveal aria-label="Certificates and awards">
+        {/* The conveyor sits inside the page gutters, like every other section. Two
+            belts scroll in opposite directions; CSS pauses them only while a print is
+            open (see `.gallery:has(.gallery__viewer[open])`). The className stays static
+            so the scroll-reveal observer's `is-in` class is never clobbered. */}
+        <div className="gallery__reel" data-reveal aria-label="Certificates and awards">
         {belts.map((items, b) => (
           <div className={`gallery__row gallery__row--${b === 0 ? 'a' : 'b'}`} key={b}>
             <ul className="gallery__track" role="list" style={{ '--dur': `${items.length * 6}s` } as React.CSSProperties}>
@@ -125,6 +124,7 @@ export default function Gallery() {
             </ul>
           </div>
         ))}
+        </div>
       </div>
 
       <dialog
