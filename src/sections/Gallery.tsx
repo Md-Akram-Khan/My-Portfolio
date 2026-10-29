@@ -1,63 +1,37 @@
-// RULE VII · "The Evidence Room" — photo gallery of award photos, certificates and
-// event moments, pinned up like evidence on an investigation board. Clicking a print
-// opens a lightbox (native modal <dialog>) with previous/next and keyboard arrows.
+// RULE VII · "The Evidence Room" — the case evidence, filed as certificates and
+// award prints. Two belts of prints run in opposite directions in an endless loop,
+// like evidence passing on a conveyor; hover (or tab onto) a belt to hold it still.
+// Clicking a print opens a lightbox (native modal <dialog>) with prev/next + arrows.
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { gallery, sections, type GalleryItem, type GalleryKind } from '../data/portfolio'
+import { gallery, sections, type GalleryKind } from '../data/portfolio'
 import { asset, useReducedMotion } from '../lib/env'
 import RuleEyebrow from '../components/RuleEyebrow'
 import './Gallery.css'
 
 const meta = sections.find((s) => s.id === 'gallery')
-
-const KIND_LABEL: Record<GalleryKind, string> = {
-  certificate: 'Certificates',
-  award: 'Awards',
-  event: 'Events',
-}
 const KIND_ONE: Record<GalleryKind, string> = { certificate: 'Certificate', award: 'Award', event: 'Event' }
-
-type Filter = 'all' | GalleryKind
-// Only offer filters for kinds that have photos.
-const kinds = (Object.keys(KIND_LABEL) as GalleryKind[]).filter((k) => gallery.some((g) => g.kind === k))
 const pad = (n: number) => String(n).padStart(2, '0')
 
-function Print({ item, n, onOpen }: { item: GalleryItem; n: number; onOpen: () => void }) {
-  return (
-    <li className={`gallery__item gallery__item--${item.kind}`} data-reveal style={{ '--tilt': `${((n * 37) % 7) - 3}deg` } as React.CSSProperties}>
-      <button type="button" className="gallery__print" onClick={onOpen}>
-        <span className="gallery__pin" aria-hidden="true" />
-        <span className="gallery__frame">
-          <picture>
-            <source type="image/webp" srcSet={asset(item.webp)} />
-            <img src={asset(item.jpg)} alt={item.alt} width={item.width} height={item.height} loading="lazy" decoding="async" />
-          </picture>
-          <span className="mono gallery__tag" aria-hidden="true">
-            Exhibit {pad(n + 1)}
-          </span>
-        </span>
-        <span className="gallery__label">
-          <span className="mono gallery__kind">
-            {KIND_ONE[item.kind]}
-            {item.date ? ` · ${item.date}` : ''}
-          </span>
-          <span className="hand gallery__title">{item.title}</span>
-        </span>
-        <span className="visually-hidden">, open larger</span>
-      </button>
-    </li>
-  )
+// Enough prints per belt that one copy is wider than the screen. The two belts
+// split the evidence (even indices on top, odd on the bottom); each is repeated
+// up to this length, then the whole belt is duplicated so the loop is seamless.
+const MIN_PER_BELT = 8
+function belt(items: typeof gallery): typeof gallery {
+  if (!items.length) return []
+  const out = [...items]
+  for (let k = 0; out.length < MIN_PER_BELT; k++) out.push(items[k % items.length])
+  return out
 }
+const belts = [belt(gallery.filter((_, i) => i % 2 === 0)), belt(gallery.filter((_, i) => i % 2 === 1))]
 
 export default function Gallery() {
   const ref = useRef<HTMLElement>(null)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const reduced = useReducedMotion()
   const instant = reduced || typeof IntersectionObserver === 'undefined'
-  const [filter, setFilter] = useState<Filter>('all')
   const [index, setIndex] = useState<number | null>(null)
 
-  const shown = filter === 'all' ? gallery : gallery.filter((g) => g.kind === filter)
-  const current = index === null ? null : shown[index]
+  const current = index === null ? null : gallery[index]
 
   useLayoutEffect(() => {
     if (!instant) ref.current?.classList.add('gallery--armed')
@@ -83,17 +57,17 @@ export default function Gallery() {
     )
     items.forEach((el) => io.observe(el))
     return () => io.disconnect()
-  }, [instant, filter])
+  }, [instant])
 
   const open = (i: number) => {
     setIndex(i)
     dialogRef.current?.showModal()
   }
   const close = () => dialogRef.current?.close()
-  const step = (d: number) => setIndex((i) => (i === null ? i : (i + d + shown.length) % shown.length))
+  const step = (d: number) => setIndex((i) => (i === null ? i : (i + d + gallery.length) % gallery.length))
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (shown.length < 2) return
+    if (gallery.length < 2) return
     if (e.key === 'ArrowRight') step(1)
     if (e.key === 'ArrowLeft') step(-1)
   }
@@ -103,34 +77,52 @@ export default function Gallery() {
       <div className="container">
         <header className="gallery__intro" data-reveal>
           <div>
-            <RuleEyebrow numeral={meta?.numeral ?? 'VII'} subtitle="Gallery" className="gallery__eyebrow" />
+            <RuleEyebrow numeral={meta?.numeral ?? 'VIII'} subtitle="Gallery" className="gallery__eyebrow" />
             <h2 className="gothic gallery__title-main" id="gallery-title">
               {meta?.label ?? 'Evidence Room'}
             </h2>
-            <p className="hand gallery__lede">Certificates, awards and moments, pinned to the board as proof.</p>
+            <p className="hand gallery__lede">The evidence never stops moving. Hover a print to hold it still.</p>
           </div>
-          {kinds.length > 1 && (
-            <div className="gallery__filters" role="group" aria-label="Filter the gallery">
-              {(['all', ...kinds] as Filter[]).map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  className={`mono gallery__filter${filter === f ? ' is-on' : ''}`}
-                  aria-pressed={filter === f}
-                  onClick={() => setFilter(f)}
-                >
-                  {f === 'all' ? 'All' : KIND_LABEL[f]}
-                </button>
-              ))}
-            </div>
-          )}
         </header>
+      </div>
 
-        <ul className={`gallery__board${shown.length === 1 ? ' gallery__board--single' : ''}`} role="list">
-          {shown.map((item, i) => (
-            <Print key={item.id} item={item} n={gallery.indexOf(item)} onOpen={() => open(i)} />
-          ))}
-        </ul>
+      {/* Full-bleed conveyor: two belts scrolling in opposite directions. The belts
+          keep moving under the cursor; they pause only while a print is open. */}
+      <div className={`gallery__reel${index !== null ? ' is-paused' : ''}`} data-reveal aria-label="Certificates and awards">
+        {belts.map((items, b) => (
+          <div className={`gallery__row gallery__row--${b === 0 ? 'a' : 'b'}`} key={b}>
+            <ul className="gallery__track" role="list" style={{ '--dur': `${items.length * 6}s` } as React.CSSProperties}>
+              {[...items, ...items].map((item, i) => {
+                const gi = gallery.indexOf(item)
+                const dup = i >= items.length // second copy: present for the loop, hidden from AT and tab order
+                return (
+                  <li className="gallery__card" key={i} aria-hidden={dup || undefined}>
+                    <button type="button" className="gallery__print" onClick={() => open(gi)} tabIndex={dup ? -1 : undefined}>
+                      <span className="gallery__pin" aria-hidden="true" />
+                      <span className="gallery__frame">
+                        <picture>
+                          <source type="image/webp" srcSet={asset(item.webp)} />
+                          <img src={asset(item.jpg)} alt={dup ? '' : item.alt} width={item.width} height={item.height} loading="lazy" decoding="async" />
+                        </picture>
+                        <span className="mono gallery__tag" aria-hidden="true">
+                          Exhibit {pad(gi + 1)}
+                        </span>
+                      </span>
+                      <span className="gallery__label">
+                        <span className="mono gallery__kind">
+                          {KIND_ONE[item.kind]}
+                          {item.date ? ` · ${item.date}` : ''}
+                        </span>
+                        <span className="hand gallery__title">{item.title}</span>
+                      </span>
+                      <span className="visually-hidden">, open larger</span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        ))}
       </div>
 
       <dialog
@@ -148,7 +140,7 @@ export default function Gallery() {
             <header className="gallery__viewer-head">
               <div>
                 <p className="mono gallery__viewer-kicker">
-                  Exhibit {pad(gallery.indexOf(current) + 1)} · {KIND_ONE[current.kind]}
+                  Exhibit {pad(index! + 1)} · {KIND_ONE[current.kind]}
                   {current.date ? ` · ${current.date}` : ''}
                 </p>
                 <h3 className="gothic gallery__viewer-title" id="gallery-viewer-title">
@@ -165,7 +157,7 @@ export default function Gallery() {
                 <source type="image/webp" srcSet={asset(current.webp)} />
                 <img className="gallery__viewer-img" src={asset(current.jpg)} alt={current.alt} width={current.width} height={current.height} />
               </picture>
-              {shown.length > 1 && (
+              {gallery.length > 1 && (
                 <>
                   <button type="button" className="gallery__nav gallery__nav--prev" onClick={() => step(-1)}>
                     <span aria-hidden="true">‹</span>
@@ -181,9 +173,9 @@ export default function Gallery() {
             <footer className="gallery__viewer-foot">
               {current.caption && <p className="gallery__viewer-caption">{current.caption}</p>}
               <div className="gallery__viewer-actions">
-                {shown.length > 1 && (
+                {gallery.length > 1 && (
                   <span className="mono gallery__count" aria-live="polite">
-                    {index! + 1} / {shown.length}
+                    {index! + 1} / {gallery.length}
                   </span>
                 )}
                 {current.pdf && (
