@@ -218,6 +218,7 @@ export const roles: Role[] = [
     points: [
       'Volunteered at Code Samurai, the biggest inter-university hackathon in Bangladesh, organized by the University of Dhaka in collaboration with BJIT, Japan.',
     ],
+    links: [{ label: 'Certificate', href: 'media/code-samurai-2024-certificate.pdf' }],
   },
 ]
 
@@ -461,7 +462,22 @@ export const contests: Contest[] = [
       alt: 'Certificate of participation in the 10th Battle of Brains 2025, held 20 September 2025 at the Department of Computer Science & Engineering, University of Dhaka, organised by CSEDU Informatics Club, awarded to Md. Akram Khan',
     },
   },
-  { kind: 'cp', year: 2024, name: 'Battle of Brains 2024', scope: 'intra', organizer: 'University of Dhaka', rank: 14, field: 68, standings: 'https://toph.co/c/battle-brains-2024/standings' },
+  {
+    kind: 'cp',
+    year: 2024,
+    name: 'Battle of Brains 2024',
+    scope: 'intra',
+    organizer: 'University of Dhaka',
+    rank: 14,
+    field: 68,
+    standings: 'https://toph.co/c/battle-brains-2024/standings',
+    certificate: {
+      webp: 'media/battle-of-brains-2024-certificate.webp',
+      jpg: 'media/battle-of-brains-2024-certificate.jpg',
+      pdf: 'media/battle-of-brains-2024-certificate.pdf',
+      alt: 'Certificate of achievement in the 9th Battle of Brains 2024, held 5 October 2024 at the Department of Computer Science and Engineering, University of Dhaka, awarded to Md. Akram Khan for securing the Runner Up – 1st Year position',
+    },
+  },
   { kind: 'ctf', year: 2023, name: 'DU CTF 2023', scope: 'intra', organizer: 'University of Dhaka', team: 'DU_CTF_NOOBS', rank: 10, field: 100, fieldPlus: true },
 ]
 
@@ -539,6 +555,32 @@ export const gallery: GalleryItem[] = [
     height: 889,
     alt: 'Certificate of participation in the 10th Battle of Brains 2025, held 20 September 2025 at the Department of Computer Science & Engineering, University of Dhaka, organised by CSEDU Informatics Club, awarded to Md. Akram Khan',
     pdf: 'media/battle-of-brains-2025-certificate.pdf',
+  },
+  {
+    id: 'battle-of-brains-2024',
+    kind: 'certificate',
+    title: 'Battle of Brains 2024',
+    caption: 'Certificate of achievement · 9th Battle of Brains · Runner Up – 1st Year · CSE, University of Dhaka',
+    date: 'Oct 2024',
+    webp: 'media/battle-of-brains-2024-certificate.webp',
+    jpg: 'media/battle-of-brains-2024-certificate.jpg',
+    width: 1280,
+    height: 942,
+    alt: 'Certificate of achievement in the 9th Battle of Brains 2024, held 5 October 2024 at the Department of Computer Science and Engineering, University of Dhaka, awarded to Md. Akram Khan for securing the Runner Up – 1st Year position',
+    pdf: 'media/battle-of-brains-2024-certificate.pdf',
+  },
+  {
+    id: 'code-samurai-2024',
+    kind: 'certificate',
+    title: 'Code Samurai 2024',
+    caption: 'Certificate of appreciation · volunteer · inter-university hackathon · CSE, University of Dhaka × BJIT',
+    date: 'May 2024',
+    webp: 'media/code-samurai-2024-certificate.webp',
+    jpg: 'media/code-samurai-2024-certificate.jpg',
+    width: 1280,
+    height: 925,
+    alt: 'Code Samurai 2024 certificate of appreciation awarded to Md Akram Khan for voluntary work towards the hackathon, jointly organised by the Department of Computer Science and Engineering, University of Dhaka, and BJIT Limited, held 11–12 May 2024',
+    pdf: 'media/code-samurai-2024-certificate.pdf',
   },
   {
     id: 'du-ctf-2023',
