@@ -427,7 +427,23 @@ export const contests: Contest[] = [
       alt: 'NahamCon CTF 2025 certificate of completion for team Restless_goblins: 1326 points, 74th of 859 teams, 8 of 25 challenges solved',
     },
   },
-  { kind: 'ctf', year: 2025, name: 'AL KHWARIZMI CTF', scope: 'national', organizer: 'Bangladesh Islami Chhatrashibir Science', team: 'DU_Restless_goblins', rank: 6, field: 650, fieldPlus: true },
+  {
+    kind: 'ctf',
+    year: 2025,
+    name: 'AL KHWARIZMI CTF',
+    scope: 'national',
+    organizer: 'Bangladesh Islami Chhatrashibir Science',
+    team: 'DU_Restless_goblins',
+    rank: 6,
+    field: 650,
+    fieldPlus: true,
+    certificate: {
+      webp: 'media/al-khwarizmi-ctf-2025-certificate.webp',
+      jpg: 'media/al-khwarizmi-ctf-2025-certificate.jpg',
+      pdf: 'media/al-khwarizmi-ctf-2025-certificate.pdf',
+      alt: 'Al-Khwarizmi Science Fest 2025 certificate of participation in the Capture The Flag (CTF) Competition, held 29–30 January 2026, awarded to Md. Akram Khan',
+    },
+  },
   { kind: 'cp', year: 2025, name: 'Battle of Brains 2025', scope: 'intra', organizer: 'University of Dhaka', rank: 10, field: 105, standings: 'https://toph.co/c/battle-brains-2025/standings' },
   { kind: 'cp', year: 2024, name: 'Battle of Brains 2024', scope: 'intra', organizer: 'University of Dhaka', rank: 14, field: 68, standings: 'https://toph.co/c/battle-brains-2024/standings' },
   { kind: 'ctf', year: 2023, name: 'DU CTF 2023', scope: 'intra', organizer: 'University of Dhaka', team: 'DU_CTF_NOOBS', rank: 10, field: 100, fieldPlus: true },
@@ -456,6 +472,19 @@ export type GalleryItem = {
 }
 
 export const gallery: GalleryItem[] = [
+  {
+    id: 'al-khwarizmi-ctf-2025',
+    kind: 'certificate',
+    title: 'AL KHWARIZMI CTF',
+    caption: 'Certificate of participation · Al-Khwarizmi Science Fest · team DU_Restless_goblins · 6th of 650+ teams',
+    date: 'Jan 2026',
+    webp: 'media/al-khwarizmi-ctf-2025-certificate.webp',
+    jpg: 'media/al-khwarizmi-ctf-2025-certificate.jpg',
+    width: 899,
+    height: 1280,
+    alt: 'Al-Khwarizmi Science Fest 2025 certificate of participation in the Capture The Flag (CTF) Competition, held 29–30 January 2026, awarded to Md. Akram Khan',
+    pdf: 'media/al-khwarizmi-ctf-2025-certificate.pdf',
+  },
   {
     id: 'nahamcon-2025',
     kind: 'certificate',
