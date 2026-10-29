@@ -3,7 +3,7 @@
 // and dates on the left (the date stamped like a file label), details on the right.
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { roles, sections, type Role } from '../data/portfolio'
-import { useReducedMotion } from '../lib/env'
+import { asset, useReducedMotion } from '../lib/env'
 import RuleEyebrow from '../components/RuleEyebrow'
 import './Force.css'
 
@@ -62,7 +62,7 @@ function RoleCard({ role, i }: { role: Role; i: number }) {
             <ul className="force__links" role="list">
               {role.links.map((l) => (
                 <li key={l.href}>
-                  <a className="mono force__link" href={l.href} target="_blank" rel="noopener noreferrer">
+                  <a className="mono force__link" href={/^https?:/.test(l.href) ? l.href : asset(l.href)} target="_blank" rel="noopener noreferrer">
                     {l.label}
                     <span className="visually-hidden">
                       {' '}
